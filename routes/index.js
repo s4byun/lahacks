@@ -29,7 +29,7 @@ var randomId = crypto.randomBytes(20).toString('hex');
 var User = mongoose.model('User', userSchema);
 
 router.post('/newUser', function(req,res) {
-    console.log("CREATING USER");
+    console.log("CREATING USER:", req.body);
     new User({
         Id: randomId, 
         Name: req.body.UserName,
