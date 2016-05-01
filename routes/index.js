@@ -1,13 +1,19 @@
-var express = require('express');
-var router = express.Router();
-
-var mongo = require('mongodb');
+var express  = require('express');
+var mongo    = require('mongodb');
 var mongoose = require('mongoose');
-var crypto = require('crypto');
+var crypto   = require('crypto');
+
+var User     = require('../models/user');
+var Contract = require('../models/contract');
+var Ticket   = require('../models/ticket');
+
+var router   = express.Router();
 
 mongoose.connect('mongodb://localhost/mydb');
 
-/* GET home page. */
+//var randomId = crypto.randomBytes(20).toString('hex');
+
+/* GET */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
@@ -16,25 +22,14 @@ router.get('/addUser', function(req, res) {
     res.render('addUser.ejs');
 });
 
-
-var userSchema = new mongoose.Schema ({
-    Id: String,
-    Name: String,
-    Address: String,
-    Phone: String
-});
-
-var randomId = crypto.randomBytes(20).toString('hex');
-
-var User = mongoose.model('User', userSchema);
-
+/* POST */
 router.post('/newUser', function(req,res) {
     console.log("CREATING USER:", req.body);
     new User({
-        Id: randomId, 
-        Name: req.body.UserName,
-        Address: req.body.UserAddress,
-        Phone: req.body.UserPhone
+        usr_id: crypto.randomBytes(20).toString('hex'), 
+        name: req.body.UserName,
+        address: req.body.UserAddress,
+        phone: req.body.UserPhone
     }).save(function(err, prd) {
         if(err) {
             console.log("SAVE ERROR:");
@@ -44,17 +39,6 @@ router.post('/newUser', function(req,res) {
     });
 });
 
-/*
-var ticketSchema = new mongoose.Schema ({
-    Id: String,
-    FriendId: String,
-    Type: String,
-    Deadline: Date,
-    Condition: String,
-    Flag: Boolean
-});
-*/
-//var Ticket = mongoose.model('Ticket', ticketSchema);
 /*
 router.post('/new', function(req, res)) {
     new Ticket({
